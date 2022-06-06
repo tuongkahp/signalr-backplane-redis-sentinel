@@ -5,20 +5,22 @@ services:
     image: redis
     ports:
       - "6379:6379"
-    command: "redis-server /etc/redis.conf"
+    command: "redis-server /etc/redis-config/redis.conf"
     volumes:
-      - "./data/master:/data/"
-      - "./data/master.conf:/etc/redis.conf"
+# Volume cannot work with redis on window
+#      - "./data/master:/data/"
+      - "./config/redis-master:/etc/redis-config"
 
   redis-slave:
     container_name: "redis-slave"
     image: redis
     ports:
       - "6380:6379"
-    command: "redis-server /etc/redis.conf"
+    command: "redis-server /etc/redis-config/redis.conf"
     volumes:
-      - "./data/slave:/data/"
-      - "./data/slave.conf:/etc/redis.conf"
+# Volume cannot work with redis on window
+#      - "./data/slave:/data/"
+      - "./config/redis-slave:/etc/redis-config"
     depends_on:
       - redis-master
 
@@ -27,9 +29,9 @@ services:
     image: redis
     ports:
       - "26379:26379"
-    command: "redis-server /etc/sentinel.conf --sentinel"
+    command: "redis-server /etc/redis-config/redis.conf --sentinel"
     volumes:
-      - "./data/sentinel.conf:/etc/sentinel.conf"
+      - "./config/redis-sentinel:/etc/redis-config"
     depends_on:
       - redis-master
       - redis-slave
